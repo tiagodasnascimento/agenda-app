@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: agenda_eventos_db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=agendadb
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: agenda_eventos_backend
+    build: ./backend
+    restart: always
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=agendadb
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "sleep 5; node server.js"
+
+  frontend:
+    container_name: agenda_eventos_frontend
+    build: ./frontend
+    restart: always
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+
+volumes:
+  pg_data:
