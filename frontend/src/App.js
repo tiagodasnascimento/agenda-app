@@ -17,7 +17,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const API_URL = 'http://localhost:3001/api/eventos';
+const API_URL = '/api/eventos';
 
 function App() {
   const [eventos, setEventos] = useState([]);

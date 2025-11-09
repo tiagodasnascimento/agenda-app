@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: agenda-backend:kind
+        imagePullPolicy: IfNotPresent # Importante para usar a imagem carregada no Kind
+        ports:
+        - containerPort: 3001
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        # Pequeno delay para garantir que o DNS do cluster esteja pronto ao iniciar
+        command: ["/bin/sh", "-c"]
+        args: ["sleep 5 && node server.js"]

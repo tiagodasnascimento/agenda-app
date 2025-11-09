@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: backend
+data:
+  DB_HOST: postgres-service.database.svc.cluster.local
+  DB_USER: admin
+  DB_PASSWORD: admin
+  DB_NAME: agendadb
+  DB_PORT: "5432"
+  PORT: "3001"
